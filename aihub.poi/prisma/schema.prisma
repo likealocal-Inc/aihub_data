@@ -19,7 +19,7 @@ model useFile{
 model Poi{
   id Int @default(autoincrement()) @id
   
-  poiNum String @unique
+  poiNum String
   type String
   name String
   addr String
