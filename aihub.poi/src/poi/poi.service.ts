@@ -56,10 +56,10 @@ export class PoiService {
         }
 
         const data = {
-          poiNum: element['poi_id'],
-          name: element['name'],
+          poiNum: element['poi_id'] === undefined ? '' : element['poi_id'],
+          name: element['name'] === undefined ? '' : element['name'],
           addr: element['addr'] === undefined ? '' : element['addr'],
-          type: element['type'],
+          type: element['type'] === undefined ? '' : element['type'],
           elseData: JSON.stringify(elseData),
         };
         console.log(
