@@ -8,7 +8,6 @@ export class PoiService {
   async selfFile(dir: string) {
     const fileUtils = new FileUtils();
     const files = await fileUtils.getFiles(dir);
-
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
       if (file !== '.DS_Store') {
@@ -17,12 +16,12 @@ export class PoiService {
         if (isFile === false) {
           console.log('newDir', newDir);
           await this.prisma.useFile.create({ data: { dir: newDir, name: '' } });
-          this.selfFile(newDir);
+          await this.selfFile(newDir);
         } else {
           console.log('file ', newDir);
-          // const txt = await fileUtils.read(newDir);
-          // const txtJson = JSON.parse(txt);
-          // await this.insertFile(txtJson);
+          const txt = await fileUtils.read(newDir);
+          const txtJson = JSON.parse(txt);
+          await this.insertFile(txtJson);
         }
       }
     }
@@ -112,8 +111,9 @@ export class PoiService {
     data['elseData'] = JSON.stringify(elseData);
 
     const count = await this.prisma.poi.count({
-      where: { poiNum: data.poiNum, lang: data.lang },
+      where: { poiNum: data.poiNum, lang: data.lang, name: data.name },
     });
+    console.log(`${data.poiNum} - ${data.lang} - ${data.type}`);
     if (count === 0) {
       await this.prisma.poi.create({ data });
     }
