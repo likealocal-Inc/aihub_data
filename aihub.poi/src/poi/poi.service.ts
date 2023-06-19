@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreatePoiDto } from './dto/create-poi.dto';
 import { UpdatePoiDto } from './dto/update-poi.dto';
 import { FileUtils } from 'src/config/utils/file.utils';
+import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class PoiService {
+  constructor(private readonly prisma: PrismaService) {}
   count = 0;
   async selfFile(dir: string, head1: string, head2: any) {
     const fileUtils = new FileUtils();
@@ -33,9 +35,34 @@ export class PoiService {
     const jsonData = JSON.parse(data);
     console.log(jsonData.length);
 
-    for (let index = 0; index < 100; index++) {
+    for (let index = 0; index < jsonData.length; index++) {
       const element = jsonData[index];
-      console.log(element);
+      const keys = Object.keys(element);
+      const elseData = {};
+      for (let index = 0; index < keys.length; index++) {
+        const key = keys[index];
+        if (
+          element[key] !== 'poi_id' &&
+          element[key] !== 'name' &&
+          element[key] !== 'addr' &&
+          element[key] !== 'type'
+        ) {
+          elseData[key] = element[key];
+        }
+      }
+
+      const data = {
+        poiNum: element['poi_id'],
+        name: element['name'],
+        addr: element['addr'],
+        type: element['type'],
+        elseData: JSON.stringify(elseData),
+      };
+      // console.log(data);
+      console.log(`${index} - ${data.poiNum}`);
+      await this.prisma.poi.create({
+        data,
+      });
     }
   }
 
