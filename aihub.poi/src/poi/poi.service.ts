@@ -91,7 +91,7 @@ export class PoiService {
       if (d['k_column'] === '관광타입') {
         data['name'] = d['t_context'];
         data['lang'] = d['language'];
-      } else if (d['k_column'] === '주소') {
+      } else if (d['k_column'].startsWith('주소')) {
         data['addr'] = d['t_context'];
         data['lang'] = d['language'];
       } else if (
