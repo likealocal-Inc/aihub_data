@@ -24,4 +24,5 @@ model Poi{
   name String
   addr String
   elseData String
+  lang String? @default("kr")
 }

@@ -9,4 +9,9 @@ export class PoiController {
   findAll() {
     return this.poiService.mappingOrigin();
   }
+
+  @Get('label')
+  label() {
+    return this.poiService.mappingLabel();
+  }
 }
