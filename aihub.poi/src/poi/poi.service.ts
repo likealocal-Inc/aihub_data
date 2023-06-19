@@ -15,6 +15,7 @@ export class PoiService {
         const newDir = `${dir}/${file}`;
         const isFile = await fileUtils.isFile(newDir);
         if (isFile === false) {
+          this.prisma.useFile.create({ data: { dir: newDir, name: '' } });
           this.selfFile(newDir);
         } else {
           const txt = await fileUtils.read(newDir);
@@ -108,8 +109,13 @@ export class PoiService {
     }
     data['elseData'] = JSON.stringify(elseData);
 
+    const count = await this.prisma.poi.count({
+      where: { poiNum: data.poiNum, lang: data.lang },
+    });
+    if (count === 0) {
+      await this.prisma.poi.create({ data });
+    }
     // console.log(data);
-    await this.prisma.poi.create({ data });
   }
   /**
 {
