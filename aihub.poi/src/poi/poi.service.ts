@@ -15,12 +15,14 @@ export class PoiService {
         const newDir = `${dir}/${file}`;
         const isFile = await fileUtils.isFile(newDir);
         if (isFile === false) {
-          this.prisma.useFile.create({ data: { dir: newDir, name: '' } });
+          console.log('newDir', newDir);
+          await this.prisma.useFile.create({ data: { dir: newDir, name: '' } });
           this.selfFile(newDir);
         } else {
-          const txt = await fileUtils.read(newDir);
-          const txtJson = JSON.parse(txt);
-          await this.insertFile(txtJson);
+          console.log('file ', newDir);
+          // const txt = await fileUtils.read(newDir);
+          // const txtJson = JSON.parse(txt);
+          // await this.insertFile(txtJson);
         }
       }
     }
