@@ -33,36 +33,41 @@ export class PoiService {
     const file = new FileUtils();
     const data = await file.read(dir);
     const jsonData = JSON.parse(data);
-    console.log(jsonData.length);
+    const total = jsonData.length;
 
     for (let index = 0; index < jsonData.length; index++) {
       const element = jsonData[index];
-      const keys = Object.keys(element);
-      const elseData = {};
-      for (let index = 0; index < keys.length; index++) {
-        const key = keys[index];
-        if (
-          element[key] !== 'poi_id' &&
-          element[key] !== 'name' &&
-          element[key] !== 'addr' &&
-          element[key] !== 'type'
-        ) {
-          elseData[key] = element[key];
-        }
-      }
-
-      const data = {
-        poiNum: element['poi_id'],
-        name: element['name'],
-        addr: element['addr'],
-        type: element['type'],
-        elseData: JSON.stringify(elseData),
-      };
-      // console.log(data);
-      console.log(`${index} - ${data.poiNum}`);
-      await this.prisma.poi.create({
-        data,
+      const count = await this.prisma.poi.count({
+        where: { poiNum: element['poi_id'] },
       });
+      if (count === 0) {
+        const keys = Object.keys(element);
+        const elseData = {};
+        for (let index = 0; index < keys.length; index++) {
+          const key = keys[index];
+          if (
+            element[key] !== 'poi_id' &&
+            element[key] !== 'name' &&
+            element[key] !== 'addr' &&
+            element[key] !== 'type'
+          ) {
+            elseData[key] = element[key];
+          }
+        }
+
+        const data = {
+          poiNum: element['poi_id'],
+          name: element['name'],
+          addr: element['addr'] === '' ? '' : element['addr'],
+          type: element['type'],
+          elseData: JSON.stringify(elseData),
+        };
+        // console.log(data);
+        console.log(`${total} / ${index} - ${data.poiNum}`);
+        await this.prisma.poi.create({
+          data,
+        });
+      }
     }
   }
 
