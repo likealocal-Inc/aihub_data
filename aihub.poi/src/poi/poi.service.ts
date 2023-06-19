@@ -62,11 +62,12 @@ export class PoiService {
           type: element['type'],
           elseData: JSON.stringify(elseData),
         };
-        console.log(data);
-        console.log(`${total} / ${index} - ${data.poiNum}`);
-        // await this.prisma.poi.create({
-        //   data,
-        // });
+        console.log(
+          `${total} / ${index} - ${data.poiNum} = ${element['addr']}`,
+        );
+        await this.prisma.poi.create({
+          data,
+        });
       }
     }
   }
