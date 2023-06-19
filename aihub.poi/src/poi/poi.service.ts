@@ -15,13 +15,20 @@ export class PoiService {
         const isFile = await fileUtils.isFile(newDir);
         if (isFile === false) {
           console.log('newDir', newDir);
-          await this.prisma.useFile.create({ data: { dir: newDir, name: '' } });
-          await this.selfFile(newDir);
+          // 이미 처리 한 폴더
+          if (newDir.includes('/TL_영어_관광지') === false) {
+            await this.prisma.useFile.create({
+              data: { dir: newDir, name: '' },
+            });
+            await this.selfFile(newDir);
+          }
         } else {
-          console.log('file ', newDir);
-          const txt = await fileUtils.read(newDir);
-          const txtJson = JSON.parse(txt);
-          await this.insertFile(txtJson);
+          if (newDir.endsWith('.zip')) {
+            console.log('file ', newDir);
+            const txt = await fileUtils.read(newDir);
+            const txtJson = JSON.parse(txt);
+            await this.insertFile(txtJson);
+          }
         }
       }
     }
