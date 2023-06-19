@@ -58,7 +58,7 @@ export class PoiService {
         const data = {
           poiNum: element['poi_id'],
           name: element['name'],
-          addr: element['addr'] === '' ? '' : element['addr'],
+          addr: element['addr'] === undefined ? '' : element['addr'],
           type: element['type'],
           elseData: JSON.stringify(elseData),
         };
