@@ -23,7 +23,7 @@ export class PoiService {
             await this.selfFile(newDir);
           }
         } else {
-          if (newDir.endsWith('.zip')) {
+          if (newDir.endsWith('.zip') === false) {
             console.log('file ', newDir);
             const txt = await fileUtils.read(newDir);
             const txtJson = JSON.parse(txt);
